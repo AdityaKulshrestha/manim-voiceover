@@ -161,7 +161,11 @@ class SpeechService(ABC):
         dumped_data = json.dumps(data)
         data_hash = hashlib.sha256(dumped_data.encode("utf-8")).hexdigest()
         suffix = data_hash[:8]
-        input_text = data["input_text"]
+
+        if data.get('input_text'):
+            input_text = data["inputs"]
+        elif isinstance(data['inputs'], list):
+            input_text = data['inputs'][0]
         input_text = remove_bookmarks(input_text)
         slug = slugify(input_text, max_length=50, word_boundary=True, save_order=True)
         ret = f"{slug}-{suffix}"
